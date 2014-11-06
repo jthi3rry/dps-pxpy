@@ -1,0 +1,8 @@
+include LICENSE
+include README.rst
+include setup.py
+include tox.ini
+include requirements.txt
+recursive-include dps *.py
+recursive-exclude dps *.pyc
+recursive-exclude dps *.pyo
