@@ -21,8 +21,8 @@ dps-pxpy
     :target: https://pypi.python.org/pypi/dps-pxpy/
 
 This package provides a Python low-level client for the `DPS Payment Express <https://www.paymentexpress.com/Technical_Resources/Ecommerce_NonHosted>`_ API's.
-It provides clients for both `PxPost <https://www.paymentexpress.com/Technical_Resources/Ecommerce_NonHosted/PxPost>`_
-and `PxFusion <https://www.paymentexpress.com/Technical_Resources/Ecommerce_NonHosted/PxFusion.aspx>`_.
+Clients for both `PxPost <https://www.paymentexpress.com/Technical_Resources/Ecommerce_NonHosted/PxPost>`_
+and `PxFusion <https://www.paymentexpress.com/Technical_Resources/Ecommerce_NonHosted/PxFusion.aspx>`_ are available.
 
 Installation
 ------------
@@ -37,11 +37,13 @@ Usage
 PxPost
 ~~~~~~
 
-`PxPost <https://www.paymentexpress.com/Technical_Resources/Ecommerce_NonHosted/PxPost>`_ allows merchants to perform authorisations, payments and refunds.
+PxPost allows merchants to handle the entire lifecycle of payment transactions using HTTPS POST requests.
+
+For a complete documentation of the PxPost API: https://www.paymentexpress.com/Technical_Resources/Ecommerce_NonHosted/PxPost.aspx
 
 Client
 ``````
-First, instantiate a client with your PxPost username and password::
+Instantiate a client with your PxPost username and password::
 
 
     from dps.pxpost import PxPostClient
@@ -49,105 +51,139 @@ First, instantiate a client with your PxPost username and password::
     client = PxPostClient("username", "password")
 
 
-The client provides either a low level ``post`` method taking keyword arguments, or higher level ``authorize``, ``purchase``, ``complete``, ``refund`` and ``status`` methods.
+PxPostClient relies on the popular `requests <https://pypi.python.org/pypi/requests>`_.
 
 Authorize
 `````````
 
-To issue an authorisation on a credit or debit card::
+To issue an authorization on a credit or debit card::
 
-    response = client.authorize(amount="10.01", input_currency="NZD", card_number="4111111111111111", card_holder_name="Holder Name", date_expiry="1114", cvc2="123")
-
-This will issue an POST to the PxPost endpoint (dps-pxpy relies on the popular `requests <https://pypi.python.org/pypi/requests>`_).
+    response = client.authorize(amount="10.01",
+                                input_currency="NZD",
+                                card_number="4111111111111111",
+                                card_holder_name="Holder Name",
+                                date_expiry="1114",
+                                cvc2="123")
 
 You can also use a DPS billing token::
 
-    response = client.authorize(amount="10.01", input_currency="NZD", dps_billing_id="billingtoken")
+    response = client.authorize(amount="10.01",
+                                input_currency="NZD",
+                                dps_billing_id="billingtoken")
 
-Or a custom billing token::
+Or, a custom billing token::
 
-    response = client.authorize(amount="10.01", input_currency="NZD", billing_id="custombillingtoken")
+    response = client.authorize(amount="10.01",
+                                input_currency="NZD",
+                                billing_id="custombillingtoken")
 
 Complete
 ````````
 
-When you issue an authorisation and get a transaction reference from DPS, you can use this reference to complete the transaction and transfer the funds::
+To complete an authorization and transfer funds::
 
     response = client.complete(dps_txn_ref="reference")
 
 Purchase
 ````````
 
-``purchase`` is used in the same way as ``authorize``, but funds are transferred immediately::
+``purchase`` is similar to ``authorize``, but funds are transferred immediately::
 
-    response = client.purchase(amount="10.01", input_currency="NZD", card_number="4111111111111111", card_holder_name="Holder Name", date_expiry="1114", cvc2="123")
+    response = client.purchase(amount="10.01",
+                               input_currency="NZD",
+                               card_number="4111111111111111",
+                               card_holder_name="Holder Name",
+                               date_expiry="1114",
+                               cvc2="123")
 
-Note that you can use a DPS or custom billing token as per the ``authorize`` examples.
+You can also use a DPS or custom billing token.
 
 Refund
 ``````
 
-When a transaction was completed (either via ``complete`` or ``purchase``), you can perform a refund using the transaction reference::
+To perform a complete or partial refund, use the dps transaction id returned by ``purchase`` or ``complete``::
 
-    response = client.refund(dps_txn_ref="reference", amount="10.50", merchant_reference="reason for refund")
+    response = client.refund(dps_txn_ref="reference",
+                             amount="5.01",
+                             merchant_reference="reason for refund")
 
 Status
 ``````
 
-Finally, you can query the status of a transaction via a transaction ID (``authorize`` and ``purchase`` can take an optional ``txn_id`` used as a unique merchant reference)::
+To query the status of a transaction, use your merchant transaction id (``authorize`` and ``purchase`` can take an optional ``txn_id`` used as a unique merchant reference)::
 
     response = client.status(txn_id="inv1234")
 
-For a complete documentation of the PxPost API: https://www.paymentexpress.com/Technical_Resources/Ecommerce_NonHosted/PxPost.aspx
 
 PxFusion
 ~~~~~~~~
 
-`PxFusion <https://www.paymentexpress.com/Technical_Resources/Ecommerce_NonHosted/PxFusion.aspx>`_ is used when you do not want to have credit or debit card numbers transiting through your servers, but instead you want your customers to post their details to DPS directly and transparently while simply getting the outcome of the transaction.
+PxFusion allows merchants to accept credit card details within a form on their own web page. The form posts sensitive data directly to DPS, which processes the transaction and redirects the user's browser to the merchant's website in a way that is totally transparent to the cardholder.
+
+For a complete documentation of the PxFusion API: https://www.paymentexpress.com/Technical_Resources/Ecommerce_NonHosted/PxFusion.aspx
 
 Client
 ``````
 
-First, instantiate a client with your PxFusion username and password::
+Instantiate a client with your PxFusion username and password::
 
     from dps.pxfusion import PxFusionClient
 
     client = PxFusionClient("username", "password")
 
+PxFusionClient relies on `suds-jurko <https://pypi.python.org/pypi/suds-jurko/0.6>`_) for SOAP requests and ships with `suds_requests <https://pypi.python.org/pypi/suds_requests>`_ to take advantage of requests.
+
 Transaction
 ```````````
 
-Before being able to post payment details to DPS, you need to initiate a transaction to retrieve a transaction ID (also called session ID)::
+To retrieve a session ID where funds are transferred immediately::
 
-    response = client.purchase(amount="10.01", currency="NZD", return_url="https://example.org/callback", txn_ref="ref")
+    response = client.purchase(amount="10.01",
+                               currency="NZD",
+                               return_url="https://yourdomain.com/pxfusion-callback",
+                               txn_ref="ref")
 
-This will issue a SOAP call to ``GetTransactionId`` and initiate a ``Purchase`` transaction (dps-pxpy relies on `suds-jurko <https://pypi.python.org/pypi/suds-jurko/0.6>`_). You can also issue an ``Authorize`` transaction by using ``client.authorize`` instead of ``client.purchase``. Note that completing an authorisation can only be done via PxPost.
 
-Note that, at this stage, you can request a billing token to be returned with the outcome of the transaction and use it with PxPost for recurrent billing or subsequent payments.
+You can also issue authorizations::
+
+    response = client.authorize(amount="10.01",
+                                currency="NZD",
+                                return_url="https://yourdomain.com/pxfusion-callback",
+                                txn_ref="ref")
+
+Note that completing an authorization transaction must be done via PxPost's ``complete``.
+
+After posting the payment details and session ID to the PxFusion endpoint (https://sec.paymentexpress.com/pxmi3/pxfusionauth), DPS redirects your customer to ``return_url`` with the session ID in the query string.
 
 Status
 ``````
 
-After posting the payment details along with the session ID to the PxFusion HTTP endpoint (https://sec.paymentexpress.com/pxmi3/pxfusionauth), DPS will redirect your customer to the ``return_url`` specified in the purchase or authorisation along with the session ID in the query string, this is when you need to check the outcome of the transaction::
+To check to outcome of a transaction::
 
-    response = client.status(transaction_id='sessionid')
+    response = client.status(transaction_id="sessionid")
 
 Cancellation
 ````````````
 
-To prevent a transaction from taking place, it can be cancelled::
+To prevent a transaction from taking place::
 
     response = client.cancel(transaction_id="sessionid")
-
-For a complete documentation of the PxFusion API: https://www.paymentexpress.com/Technical_Resources/Ecommerce_NonHosted/PxFusion.aspx
 
 
 Running Tests
 -------------
-::
+
+Get a copy of the repository::
+
+    git clone git@github.com:OohlaLabs/dps-pxpy.git .
+
+Install `tox <https://pypi.python.org/pypi/tox>`_::
+
+    pip install tox
+
+Run the tests::
 
     tox
-
 
 Contributions
 -------------
