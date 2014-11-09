@@ -131,7 +131,7 @@ Instantiate a client with your PxFusion username and password::
 
     client = PxFusionClient("username", "password")
 
-PxFusionClient relies on `suds-jurko <https://pypi.python.org/pypi/suds-jurko/0.6>`_) for SOAP requests and ships with `suds_requests <https://pypi.python.org/pypi/suds_requests>`_ to take advantage of requests.
+PxFusionClient relies on `suds-jurko <https://pypi.python.org/pypi/suds-jurko/0.6>`_ for SOAP requests and ships with `suds_requests <https://pypi.python.org/pypi/suds_requests>`_ to take advantage of requests.
 
 Transaction
 ```````````
@@ -158,7 +158,7 @@ After posting the payment details and session ID to the PxFusion endpoint (https
 Status
 ``````
 
-To check to outcome of a transaction::
+To check the outcome of a transaction::
 
     response = client.status(transaction_id="sessionid")
 
@@ -192,6 +192,10 @@ All contributions and comments are welcome.
 
 Change Log
 ----------
+
+v0.2
+~~~~
+* Fix setup.py for distribution
 
 v0.1
 ~~~~

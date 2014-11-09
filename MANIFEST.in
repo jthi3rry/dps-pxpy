@@ -1,8 +1,6 @@
 include LICENSE
 include README.rst
-include setup.py
-include tox.ini
 include requirements.txt
-recursive-include dps *.py
-recursive-exclude dps *.pyc
-recursive-exclude dps *.pyo
+recursive-exclude dps *.py[co]
+recursive-include tests *.py
+recursive-exclude tests *.py[co]

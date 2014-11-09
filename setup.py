@@ -4,7 +4,7 @@ import sys
 import os
 import re
 import codecs
-from setuptools import setup
+from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 from pip.req import parse_requirements
 
@@ -45,7 +45,8 @@ setup(
     maintainer="Thierry Jossermoz",
     maintainer_email="thierry.jossermoz@oohlalabs.com",
     url="https://github.com/OohlaLabs/dps-pxpy/",
-    packages=["dps"],
+    packages=find_packages(),
+    package_dir={'dps': 'dps'},
     install_requires=[str(ir.req) for ir in parse_requirements("requirements.txt")],
     tests_require=["tox"],
     cmdclass={"test": Tox},
