@@ -193,6 +193,11 @@ All contributions and comments are welcome.
 Change Log
 ----------
 
+v0.2.1
+~~~~~~
+* Switch to Semantic Versioning
+* Fix issue with parse_requirements for newer versions of pip (>=6.0.0)
+
 v0.2
 ~~~~
 * Fix setup.py for distribution
