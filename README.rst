@@ -2,23 +2,11 @@
 dps-pxpy
 ========
 
-.. image:: https://pypip.in/version/dps-pxpy/badge.svg
-    :target: https://pypi.python.org/pypi/dps-pxpy/
+.. image:: https://travis-ci.org/jthi3rry/dps-pxpy.svg?branch=master
+    :target: https://travis-ci.org/jthi3rry/dps-pxpy
 
-.. image:: https://pypip.in/format/dps-pxpy/badge.svg
-    :target: https://pypi.python.org/pypi/dps-pxpy/
-
-.. image:: https://travis-ci.org/OohlaLabs/dps-pxpy.svg?branch=master
-    :target: https://travis-ci.org/OohlaLabs/dps-pxpy
-
-.. image:: https://coveralls.io/repos/OohlaLabs/dps-pxpy/badge.png?branch=master
-    :target: https://coveralls.io/r/OohlaLabs/dps-pxpy
-
-.. image:: https://pypip.in/py_versions/dps-pxpy/badge.svg
-    :target: https://pypi.python.org/pypi/dps-pxpy/
-
-.. image:: https://pypip.in/license/dps-pxpy/badge.svg
-    :target: https://pypi.python.org/pypi/dps-pxpy/
+.. image:: https://coveralls.io/repos/jthi3rry/dps-pxpy/badge.png?branch=master
+    :target: https://coveralls.io/r/jthi3rry/dps-pxpy
 
 This package provides a Python low-level client for the `DPS Payment Express <https://www.paymentexpress.com/Technical_Resources/Ecommerce_NonHosted>`_ API's.
 Clients for both `PxPost <https://www.paymentexpress.com/Technical_Resources/Ecommerce_NonHosted/PxPost>`_
